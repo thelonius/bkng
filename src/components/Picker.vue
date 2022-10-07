@@ -6,13 +6,18 @@ defineProps<{ modelValue: number }>();
 name: "number-picker";
 const emit = defineEmits(["update:modelValue"]);
 
-const emitValue = (e: Event & { target: HTMLInputElement } & { value: number}) => {
-  emit("update:modelValue", parseInt(e.target.value));
+const emitValue = (
+  e: Event & { target: HTMLInputElement } & { value: number }
+) => {
+  const value = parseInt(e.target.value);
+  if (value) {
+    emit("update:modelValue", value);
+  }
 };
 </script>
 
 <template>
-  <input type="number" :value="modelValue" @input="emitValue" />
+  <input type="number" :value="modelValue" @change="emitValue" />
 </template>
 
 <style scoped></style>

@@ -25,16 +25,26 @@ const months = [
 ];
 const start = ref(today);
 
-const finish = ref(new Date(today.setDate(today.getDate() + 1)));
+const finish = ref(new Date(today.setDate(today.getDate())));
 const duration = ref(10);
 
-const doIt = () => console.log(start);
+const updateFinish = (days: number) => {
+  finish.value = new Date(new Date().setDate(new Date().getDate() + days));
+  updateDuration(days);
+};
 
-const updateFinish = (days: number) =>
-  (finish.value = new Date(finish.value.setDate(today.getDate() + days)));
+const updateDuration = (days: number) => {
+  // duration.value = days;
+  // console.log(days)
+};
 
-watch(duration, (next, prev) => {
+watch(duration, (next) => {
   updateFinish(next);
+});
+watch(finish, (next) => {
+  const diff = next.getTime() - today.getTime();
+  const days = Math.ceil(diff / (1000 * 3600 * 24));
+  updateDuration(days);
 });
 
 onMounted(() => {
@@ -52,7 +62,7 @@ onMounted(() => {
     {{ `${finish.getDate()} ${months[finish.getMonth()]}` }}</span
   >
 
-  <datepicker v-model="start" />
+  <datepicker inputFormat="dd.MM.yyyy" v-model="start" />
   <number-picker v-model="duration" />
   <div>
     <button @click="duration++">+</button>
@@ -60,7 +70,7 @@ onMounted(() => {
     <button @click="duration--">-</button>
     <button @click="doIt">do it</button>
   </div>
-  <datepicker v-model="finish" />
+  <datepicker inputFormat="dd.MM.yyyy" v-model="finish" />
 </template>
 
 <style scoped>
